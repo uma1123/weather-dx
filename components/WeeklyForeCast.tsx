@@ -35,7 +35,7 @@ const getWeatherIcon = (condition: string) => {
 function WeeklyForeCast({ weeklyForecast }: WeeklyForecastProps) {
   return (
     <Card className="p-6 bg-white/20 backdrop-blur-md border-0 shadow-2xl text-white">
-      <h3 className="text-2xl font-semibold mb-6">5日感の天気予報</h3>
+      <h3 className="text-2xl font-semibold mb-6">5日間の天気予報</h3>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         {weeklyForecast.map((day, index) => (
           <div
