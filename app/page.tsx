@@ -1,6 +1,12 @@
-import { Search } from "lucide-react";
+"use client";
+
+import SearchBar from "@/components/SearchBar";
+import WeatherCard from "@/components/WeatherCard";
+import WeatherDetails from "@/components/WeatherDetails";
+import WeeklyForeCast from "@/components/WeeklyForeCast";
 import { useState } from "react";
 
+//仮のデータ
 const weatherData = {
   current: {
     location: "Tokyo, Japan",
@@ -94,12 +100,12 @@ export default function WeatherApp() {
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Header & Search*/}
           <div className="text-center space-y-6">
-            <h1>Weather App</h1>
+            <h1 className="text-5xl font-bold text-white">Weather App</h1>
             <SearchBar onSearch={handleSearch} />
           </div>
 
           {/* Current Weather */}
-          <div className="grid grid-cols-1 lg:grid-colos-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
             <div className="lg:col-span-2">
               <WeatherCard weather={currentWeather} />
             </div>
