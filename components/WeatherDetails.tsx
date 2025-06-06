@@ -22,7 +22,7 @@ function WeatherDetails({ weather }: WeatherDetailsProps) {
     {
       icon: <Wind className="h-6 w-6" />,
       label: "風速",
-      value: `${weather.windSpeed}%`,
+      value: `${weather.windSpeed}m/s`,
     },
     {
       icon: <Gauge className="h-6 w-6" />,
@@ -32,7 +32,7 @@ function WeatherDetails({ weather }: WeatherDetailsProps) {
     {
       icon: <Eye className="h-6 w-6" />,
       label: "視差",
-      value: `${weather.visibility}%`,
+      value: `${weather.visibility}km`,
     },
   ];
   return (
