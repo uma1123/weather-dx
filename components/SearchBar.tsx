@@ -26,7 +26,7 @@ export default function SearchBar({ onSearch }: SearchProps) {
         </div>
         <Input
           type="text"
-          placeholder="都市名を入力してください"
+          placeholder="都市名を入力してください(ローマ字で)"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="pl-10 pr-20 py-3 text-lg bg-white/90 rounded-full backdrop-blur-sm border-0 shadow-lg forcus:bg-white transition-all"
