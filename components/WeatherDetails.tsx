@@ -1,6 +1,6 @@
 "use client";
 
-import { Droplet, Eye, Gauge, Sun, Wind } from "lucide-react";
+import { Droplet, Eye, Gauge, Wind } from "lucide-react";
 import React from "react";
 import { Card } from "./ui/card";
 interface WeatherDetailsProps {
@@ -8,7 +8,6 @@ interface WeatherDetailsProps {
     humidity: number;
     windSpeed: number;
     pressure: number;
-    uvIndex: number;
     visibility: number;
   };
 }
@@ -28,12 +27,7 @@ function WeatherDetails({ weather }: WeatherDetailsProps) {
     {
       icon: <Gauge className="h-6 w-6" />,
       label: "気圧",
-      value: `${weather.pressure}%`,
-    },
-    {
-      icon: <Sun className="h-6 w-6" />,
-      label: "UV指数",
-      value: `${weather.uvIndex}%`,
+      value: `${weather.pressure}hPa`,
     },
     {
       icon: <Eye className="h-6 w-6" />,
