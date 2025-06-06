@@ -11,7 +11,7 @@ interface WeatherCardProps {
   };
 }
 
-const getSeatherIcon = (condition: string) => {
+const getWeatherIcon = (condition: string) => {
   switch (condition) {
     case "sunny":
       return <Sun className="h-24 w-24 text-yellow-500" />;
@@ -32,7 +32,7 @@ export default function WeatherCard({ weather }: WeatherCardProps) {
       <div className="text-center space-y-6">
         {/* Weather Icon */}
         <div className="flex items-center justify-center">
-          {getSeatherIcon(weather.condition)}
+          {getWeatherIcon(weather.condition)}
         </div>
 
         {/* Weather Details */}
