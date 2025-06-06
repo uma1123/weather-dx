@@ -28,7 +28,7 @@ const getSeatherIcon = (condition: string) => {
 
 export default function WeatherCard({ weather }: WeatherCardProps) {
   return (
-    <Card className="p-8 bg-white/20 backdrop-blur-md border-0 shadow-2xl text-white">
+    <Card className="p-8 bg-white/20 backdrop-blur-md border-0 shadow-2xl text-white h-full">
       <div className="text-center space-y-6">
         {/* Weather Icon */}
         <div className="flex items-center justify-center">
