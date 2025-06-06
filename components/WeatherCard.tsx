@@ -6,20 +6,24 @@ interface WeatherCardProps {
   weather: {
     location: string;
     temperature: number;
-    condition: string;
+    condition: string; // OpenWeatherの "Clear", "Clouds", "Rain", "Snow" など
     description: string;
   };
 }
 
+// OpenWeather APIの"main"に基づいたマッピング
 const getWeatherIcon = (condition: string) => {
-  switch (condition) {
-    case "sunny":
+  const normalized = condition.toLowerCase();
+
+  switch (normalized) {
+    case "clear":
       return <Sun className="h-24 w-24 text-yellow-500" />;
-    case "cloudy":
-      return <Cloud className="h-24 w-24 text-gray-500" />;
-    case "rainy":
-      return <CloudRain className="h-24 w-24 text-blue-500" />;
-    case "snowy":
+    case "clouds":
+      return <Cloud className="h-24 w-24 text-gray-300" />;
+    case "rain":
+    case "drizzle":
+      return <CloudRain className="h-24 w-24 text-blue-400" />;
+    case "snow":
       return <Snowflake className="h-24 w-24 text-white" />;
     default:
       return <Sun className="h-24 w-24 text-yellow-500" />;
@@ -27,6 +31,7 @@ const getWeatherIcon = (condition: string) => {
 };
 
 export default function WeatherCard({ weather }: WeatherCardProps) {
+  console.log("condition:", weather.condition);
   return (
     <Card className="p-8 bg-white/20 backdrop-blur-md border-0 shadow-2xl text-white h-full">
       <div className="text-center space-y-6">
