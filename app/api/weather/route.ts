@@ -12,6 +12,8 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  console.log("API key:", process.env.OPENWEATHER_API_KEY);
+
   // 現在の天気データ
   const currentRes = await fetch(
     `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
@@ -102,7 +104,7 @@ export async function GET(req: NextRequest) {
       condition: currentData.weather[0].main.toLowerCase(),
       description: currentData.weather[0].description,
       humidity: currentData.main.humidity,
-      windSpeed: Math.round(currentData.wind.speed),
+      windSpeed: Math.round(currentData.wind.speed.toFixed(1)),
       pressure: Math.round(currentData.main.pressure),
       visibility: Math.round(currentData.visibility / 1000),
     },
