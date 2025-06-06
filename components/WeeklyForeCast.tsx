@@ -13,25 +13,30 @@ interface WeeklyForecastProps {
   }>;
 }
 
+//天気アイコン取得
 const getWeatherIcon = (condition: string) => {
-  switch (condition) {
-    case "sunny":
-      return <Sun className="h-8 w-8 text-yellow-500" />;
-    case "cloudy":
-      return <Cloud className="h-8 w-8 text-gray-500" />;
-    case "rainy":
-      return <CloudRain className="h-8 w-8 text-blue-500" />;
-    case "snowy":
-      return <Snowflake className="h-8 w-8 text-white" />;
+  const normalized = condition.toLowerCase();
+
+  switch (normalized) {
+    case "clear":
+      return <Sun className="h-24 w-24 text-yellow-500" />;
+    case "clouds":
+      return <Cloud className="h-24 w-24 text-gray-300" />;
+    case "rain":
+    case "drizzle":
+      return <CloudRain className="h-24 w-24 text-blue-400" />;
+    case "snow":
+      return <Snowflake className="h-24 w-24 text-white" />;
     default:
-      return <Sun className="h-8 w-8 text-yellow-500" />;
+      return <Sun className="h-24 w-24 text-yellow-500" />;
   }
 };
+
 function WeeklyForeCast({ weeklyForecast }: WeeklyForecastProps) {
   return (
     <Card className="p-6 bg-white/20 backdrop-blur-md border-0 shadow-2xl text-white">
-      <h3 className="text-2xl font-semibold mb-6">週間天気予報</h3>
-      <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+      <h3 className="text-2xl font-semibold mb-6">5日感の天気予報</h3>
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         {weeklyForecast.map((day, index) => (
           <div
             key={index}
