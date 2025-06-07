@@ -50,6 +50,14 @@ type WeeklyForecastItem = {
   }[];
 };
 
+type HourlyForecastItem = {
+  time: string;
+  condition: string;
+  temperature: number;
+  description: string;
+  humidity: number;
+};
+
 export default function WeatherApp() {
   const [currentWeather, setCurrenntWeather] = useState<
     CurrentWeather | undefined
@@ -57,7 +65,7 @@ export default function WeatherApp() {
   const [weeklyForecast, setWeeklyForecast] = useState<
     WeeklyForecastItem[] | undefined
   >();
-  const [todayHourly, setTodayHourly] = useState<any[]>([]);
+  const [todayHourly, setTodayHourly] = useState<HourlyForecastItem[]>([]);
 
   //天気検索
   const handleSearch = async (location: string) => {
