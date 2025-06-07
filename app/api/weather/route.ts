@@ -12,8 +12,6 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  console.log("API key:", process.env.OPENWEATHER_API_KEY);
-
   // 現在の天気データ
   const currentRes = await fetch(
     `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
@@ -29,7 +27,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // 5日間の予報データ（3時間おき）
+  // 5日間の3時間ごとの予報データ
   const forecastRes = await fetch(
     `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(
       location
@@ -44,17 +42,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // データの整形（1日ごとにまとめる）
-  const dailyMap = new Map<
-    string,
-    {
-      temps: number[];
-      lows: number[];
-      highs: number[];
-      conditions: string[];
-      descriptions: string[];
-    }
-  >();
+  const JST_OFFSET = 9 * 60 * 60 * 1000;
 
   type ForecastEntry = {
     dt: number;
@@ -62,29 +50,62 @@ export async function GET(req: NextRequest) {
       temp: number;
       temp_min: number;
       temp_max: number;
+      humidity: number;
+      pressure: number;
     };
     weather: { main: string; description: string }[];
+    wind: { speed: number };
+    visibility: number;
   };
 
-  forecastData.list.forEach((entry: ForecastEntry) => {
-    const date = new Date(entry.dt * 1000).toLocaleDateString("ja-JP", {
-      weekday: "short",
-    });
+  // 日別でまとめる
+  const dailyMap = new Map<
+    string,
+    {
+      lows: number[];
+      highs: number[];
+      conditions: string[];
+      descriptions: string[];
+      hourlyForecast: {
+        time: string;
+        condition: string;
+        temperature: number;
+        description: string;
+        humidity: number;
+      }[];
+    }
+  >();
+
+  (forecastData.list as ForecastEntry[]).forEach((entry) => {
+    const localDate = new Date(entry.dt * 1000 + JST_OFFSET);
+    const date = localDate.toLocaleDateString("ja-JP", { weekday: "short" });
+
     if (!dailyMap.has(date)) {
       dailyMap.set(date, {
-        temps: [],
         lows: [],
         highs: [],
         conditions: [],
         descriptions: [],
+        hourlyForecast: [],
       });
     }
+
     const d = dailyMap.get(date)!;
-    d.temps.push(entry.main.temp);
     d.lows.push(entry.main.temp_min);
     d.highs.push(entry.main.temp_max);
     d.conditions.push(entry.weather[0].main.toLowerCase());
     d.descriptions.push(entry.weather[0].description);
+    d.hourlyForecast.push({
+      time: localDate.toLocaleTimeString("ja-JP", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }),
+      condition: entry.weather[0].main.toLowerCase(),
+      temperature: Math.round(entry.main.temp),
+      description: entry.weather[0].description,
+      humidity: entry.main.humidity,
+    });
   });
 
   const dailyForecast = Array.from(dailyMap.entries())
@@ -95,6 +116,33 @@ export async function GET(req: NextRequest) {
       low: Math.round(Math.min(...data.lows)),
       condition: mostFrequent(data.conditions),
       description: mostFrequent(data.descriptions),
+      houlryForecast: data.hourlyForecast,
+    }));
+
+  // 🟡 todayHourly: 最初のエントリの日付を「今日」とみなす
+  const firstForecastDateStr = new Date(
+    forecastData.list[0].dt * 1000 + JST_OFFSET
+  )
+    .toISOString()
+    .split("T")[0];
+
+  const todayHourly = (forecastData.list as ForecastEntry[])
+    .filter((entry) => {
+      const entryDateStr = new Date(entry.dt * 1000 + JST_OFFSET)
+        .toISOString()
+        .split("T")[0];
+      return entryDateStr === firstForecastDateStr;
+    })
+    .map((entry) => ({
+      time: new Date(entry.dt * 1000 + JST_OFFSET).toLocaleTimeString("ja-JP", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }),
+      condition: entry.weather[0].main.toLowerCase(),
+      temperature: Math.round(entry.main.temp),
+      description: entry.weather[0].description,
+      humidity: entry.main.humidity,
     }));
 
   return NextResponse.json({
@@ -104,15 +152,16 @@ export async function GET(req: NextRequest) {
       condition: currentData.weather[0].main.toLowerCase(),
       description: currentData.weather[0].description,
       humidity: currentData.main.humidity,
-      windSpeed: Math.round(currentData.wind.speed.toFixed(1)),
+      windSpeed: Math.round(currentData.wind.speed),
       pressure: Math.round(currentData.main.pressure),
       visibility: Math.round(currentData.visibility / 1000),
     },
     weekly: dailyForecast,
+    todayHourly,
   });
 }
 
-// 配列の中で最も頻出する要素を返す関数
+// 最頻値を返す
 function mostFrequent(arr: string[]): string {
   const freq: { [key: string]: number } = {};
   for (const item of arr) {
