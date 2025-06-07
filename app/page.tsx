@@ -4,6 +4,7 @@ import SearchBar from "@/components/SearchBar";
 import WeatherCard from "@/components/WeatherCard";
 import WeatherDetails from "@/components/WeatherDetails";
 import WeeklyForeCast from "@/components/WeeklyForeCast";
+import TodayHourlyForecast from "@/components/TodayHourlyForeCast";
 import { useState } from "react";
 
 const getBackgroundClass = (condition: string) => {
@@ -40,6 +41,13 @@ type WeeklyForecastItem = {
   low: number;
   condition: string;
   description: string;
+  houlryForecast: {
+    time: string;
+    condition: string;
+    temperature: number;
+    description: string;
+    humidity: number;
+  }[];
 };
 
 export default function WeatherApp() {
@@ -49,6 +57,7 @@ export default function WeatherApp() {
   const [weeklyForecast, setWeeklyForecast] = useState<
     WeeklyForecastItem[] | undefined
   >();
+  const [todayHourly, setTodayHourly] = useState<any[]>([]);
 
   //天気検索
   const handleSearch = async (location: string) => {
@@ -63,6 +72,8 @@ export default function WeatherApp() {
       const weatherData = await res.json();
       setCurrenntWeather(weatherData.current);
       setWeeklyForecast(weatherData.weekly);
+      console.log("todayHourly", weatherData.todayHourly);
+      setTodayHourly(weatherData.todayHourly);
     } catch (error) {
       console.error("Error fetching weather data:", error);
     }
@@ -83,7 +94,7 @@ export default function WeatherApp() {
             <SearchBar onSearch={handleSearch} />
           </div>
 
-          {/* Current Weather */}
+          {/* 上段: WeatherCardとWeatherDetailsを横並び */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
             <div className="lg:col-span-2">
               {currentWeather && <WeatherCard weather={currentWeather} />}
@@ -92,6 +103,14 @@ export default function WeatherApp() {
               {currentWeather && <WeatherDetails weather={currentWeather} />}
             </div>
           </div>
+
+          {/* 下段: TodayHourlyForecastを横幅いっぱいで */}
+          <div>
+            {todayHourly.length > 0 && (
+              <TodayHourlyForecast forecast={todayHourly} />
+            )}
+          </div>
+
           {/* Weekly Forecast */}
           {weeklyForecast && <WeeklyForeCast weeklyForecast={weeklyForecast} />}
         </div>
