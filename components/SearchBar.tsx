@@ -19,24 +19,24 @@ export default function SearchBar({ onSearch }: SearchProps) {
     }
   };
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto ">
+    <form onSubmit={handleSubmit} className="max-w-lg w-full mx-auto ">
       <div className="relative flex items-center">
-        <div className="absolute left-3 z-10">
-          <MapPin className="text-gray-500 h-5 w-5" />
+        <div className="absolute left-4 z-10">
+          <MapPin className="text-gray-500 h-6 w-6" />
         </div>
         <Input
           type="text"
           placeholder="都市名を入力してください(ローマ字で)"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="pl-10 pr-20 py-3 text-lg bg-white/90 rounded-full backdrop-blur-sm border-0 shadow-lg forcus:bg-white transition-all"
+          className="pl-14 pr-24 py-5 text-xl bg-white/90 rounded-full backdrop-blur-sm border-0 shadow-lg forcus:bg-white transition-all"
         />
         <Button
           type="submit"
           size="sm"
-          className="absolute right-2 rouded-full bg-blue-500 hover:bg-blue-600 text-white px-4"
+          className="absolute right-3 rouded-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-xl"
         >
-          <Search className="h-4 w-4" />
+          <Search className="h-5 w-5" />
         </Button>
       </div>
     </form>
