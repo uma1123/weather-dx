@@ -7,6 +7,7 @@ import WeeklyForeCast from "@/components/WeeklyForeCast";
 import TodayHourlyForecast from "@/components/TodayHourlyForeCast";
 import { useState } from "react";
 
+//天気によって背景色を変える
 const getBackgroundClass = (condition: string) => {
   switch (condition) {
     case "clear":
@@ -50,6 +51,7 @@ type WeeklyForecastItem = {
   }[];
 };
 
+//今日の3時間ごとyぽ法データの型定義
 type HourlyForecastItem = {
   time: string;
   condition: string;
@@ -59,12 +61,15 @@ type HourlyForecastItem = {
 };
 
 export default function WeatherApp() {
+  //現在の天気の状態
   const [currentWeather, setCurrenntWeather] = useState<
     CurrentWeather | undefined
   >();
+  //週間予報データの状態
   const [weeklyForecast, setWeeklyForecast] = useState<
     WeeklyForecastItem[] | undefined
   >();
+  //今日の3時間ごとの予報データの状態
   const [todayHourly, setTodayHourly] = useState<HourlyForecastItem[]>([]);
 
   //天気検索
@@ -77,10 +82,10 @@ export default function WeatherApp() {
       if (!res.ok) {
         throw new Error("API error");
       }
+      //取得したデータを各stateにセット
       const weatherData = await res.json();
       setCurrenntWeather(weatherData.current);
       setWeeklyForecast(weatherData.weekly);
-      console.log("todayHourly", weatherData.todayHourly);
       setTodayHourly(weatherData.todayHourly);
     } catch (error) {
       console.error("Error fetching weather data:", error);

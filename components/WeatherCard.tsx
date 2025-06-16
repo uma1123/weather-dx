@@ -2,16 +2,17 @@ import { Cloud, CloudRain, Snowflake, Sun } from "lucide-react";
 import React from "react";
 import { Card } from "./ui/card";
 
+//WeatherCardコンポーネントの型定義
 interface WeatherCardProps {
   weather: {
     location: string;
     temperature: number;
-    condition: string; // OpenWeatherの "Clear", "Clouds", "Rain", "Snow" など
+    condition: string;
     description: string;
   };
 }
 
-// OpenWeather APIの"main"に基づいたマッピング
+// 天気によってアイコンを変える
 const getWeatherIcon = (condition: string) => {
   const normalized = condition.toLowerCase();
 
@@ -35,12 +36,12 @@ export default function WeatherCard({ weather }: WeatherCardProps) {
   return (
     <Card className="p-8 bg-white/20 backdrop-blur-md border-0 shadow-2xl text-white h-full">
       <div className="text-center space-y-6">
-        {/* Weather Icon */}
+        {/* 天気アイコン */}
         <div className="flex items-center justify-center">
           {getWeatherIcon(weather.condition)}
         </div>
 
-        {/* Weather Details */}
+        {/* 詳細情報 */}
         <div className="space-y-2">
           <h2 className="text-white text-3xl font-semibold">
             {weather.location}
@@ -49,7 +50,7 @@ export default function WeatherCard({ weather }: WeatherCardProps) {
           <p className="text-xl text-white/80">{weather.description}</p>
         </div>
 
-        {/* Date */}
+        {/* 日付 */}
         <div className="text-sm text-white/70">
           {new Date().toLocaleDateString("ja-JP", {
             weekday: "long",

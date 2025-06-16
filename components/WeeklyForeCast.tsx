@@ -18,6 +18,7 @@ import {
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 
+//週間予報データの型定義
 interface WeeklyForecastProps {
   weeklyForecast: Array<{
     day: string;
@@ -54,12 +55,11 @@ const getWeatherIcon = (condition: string) => {
 };
 
 function WeeklyForeCast({ weeklyForecast }: WeeklyForecastProps) {
+  //各日にちの詳細を開閉するための状態
   const [hourDetailsForecast, setHourDetailsForecast] = useState<number[]>([]);
 
   //時間ごとの天気予報をトグルする関数
-  //indexは週のインデックスを表す
   const toggleDay = (index: number) => {
-    //もしすでにhourDetailsForecastにindexが含まれている場合は削除し、含まれていない場合は追加する
     if (hourDetailsForecast.includes(index)) {
       setHourDetailsForecast(hourDetailsForecast.filter((i) => i !== index));
     } else {

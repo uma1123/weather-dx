@@ -10,7 +10,9 @@ interface SearchProps {
 
 export default function SearchBar({ onSearch }: SearchProps) {
   const [query, setQuery] = useState("");
+  //入力の状態管理
 
+  //フォーム送信時の処理
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {

@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
+//GETリクエストを処理するAPIエンドポイント
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const location = searchParams.get("location");
   const apiKEY = process.env.OPENWEATHER_API_KEY;
 
+  //locationもしくはapiKEYがない場合は、エラーを返す
   if (!location || !apiKEY) {
     return NextResponse.json(
       { error: "location is required" },
@@ -42,8 +44,10 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  //日本時間へのオフセット
   const JST_OFFSET = 9 * 60 * 60 * 1000;
 
+  //予報データの型定義
   type ForecastEntry = {
     dt: number;
     main: {
@@ -76,6 +80,7 @@ export async function GET(req: NextRequest) {
     }
   >();
 
+  //3時間ごとの予報データを日付ごとにグルーピング
   (forecastData.list as ForecastEntry[]).forEach((entry) => {
     const localDate = new Date(entry.dt * 1000 + JST_OFFSET);
     const date = localDate.toLocaleDateString("ja-JP", { weekday: "short" });
@@ -90,6 +95,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    //各データを格納
     const d = dailyMap.get(date)!;
     d.lows.push(entry.main.temp_min);
     d.highs.push(entry.main.temp_max);
@@ -108,6 +114,7 @@ export async function GET(req: NextRequest) {
     });
   });
 
+  //日ごとの週間予報データ(5日分)
   const dailyForecast = Array.from(dailyMap.entries())
     .slice(0, 5)
     .map(([day, data]) => ({
@@ -119,7 +126,7 @@ export async function GET(req: NextRequest) {
       houlryForecast: data.hourlyForecast,
     }));
 
-  // 🟡 todayHourly: 最初のエントリの日付を「今日」とみなす
+  // 今日の3時間ごと予報データを抽出
   const firstForecastDateStr = new Date(
     forecastData.list[0].dt * 1000 + JST_OFFSET
   )
@@ -145,6 +152,7 @@ export async function GET(req: NextRequest) {
       humidity: entry.main.humidity,
     }));
 
+  //データを整形して返す
   return NextResponse.json({
     current: {
       location: `${currentData.name}, ${currentData.sys.country}`,

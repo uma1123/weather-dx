@@ -13,6 +13,7 @@ interface WeatherDetailsProps {
 }
 
 function WeatherDetails({ weather }: WeatherDetailsProps) {
+  //詳細情報を配列で定義
   const details = [
     {
       icon: <Droplet className="h-6 w-6" />,

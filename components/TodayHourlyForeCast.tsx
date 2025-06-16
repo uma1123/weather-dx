@@ -14,6 +14,7 @@ interface HourlyForecastProps {
   }>;
 }
 
+//天気によってアイコンを変える
 const getWeatherIcon = (condition: string) => {
   switch (condition) {
     case "clear":
